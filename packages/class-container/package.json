@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "class-container",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
@@ -10,9 +10,10 @@
     "eslint": "^8.42.0",
     "eslint-config-custom": "workspace:*",
     "tsconfig": "workspace:*",
+    "types": "workspace:*",
     "typescript": "^5.1.3"
   },
   "dependencies": {
-    "zod": "^3.21.4"
+    "path-to-regexp": "^6.2.1"
   }
 }
