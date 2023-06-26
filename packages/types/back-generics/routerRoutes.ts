@@ -1,5 +1,5 @@
 import { RouterMethodContainer } from "./routerMethodContainer"
 
-export type RouterRoutes = {
-    [key: string]: RouterMethodContainer
+export type RouterRoutes<T extends string> = {
+    [key in T]: RouterMethodContainer
 }
