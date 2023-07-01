@@ -1,0 +1,1 @@
+export type OptionalRecord<K extends string, V> = {[P in K]?: V};

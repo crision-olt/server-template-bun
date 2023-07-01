@@ -1,36 +1,35 @@
-import { Routes } from 'types/back-generics/routes';
-import { RouterRoutes } from 'types/back-generics/routerRoutes';
-import { Router } from 'class-container/Router.class';
+import { HandlerRoute } from 'types/back-generics/handlerRoute';
+import { Method } from 'types/back-generics/method';
 import { nonNullish } from 'utils/nonNullish';
-import { ZodSchema, ZodTypeDef } from 'zod'; 
+import { ZodSchema } from 'zod';
+import { GetRouter } from './Router.class';
+import { MethodContainer } from 'types/back-generics/methodContainer';
+import { OptionalRecord } from 'types/optionalRecord';
 
-type SchemaRouterRoutes<T extends string> = ZodSchema<RouterRoutes<T>, ZodTypeDef, Partial<RouterRoutes<T>>>;
-
-class HealthyRouter<T extends string> extends Router<T>  {
+export const GetHealthyRouter = <
+        Paths extends string,
+        SchemaRouterRoutes extends ZodSchema, 
+        Routes extends [Paths, MethodContainer[]][], 
+        RouterRoutes extends OptionalRecord<Paths, [Method, HandlerRoute][]>
+    > (Router: ReturnType<typeof GetRouter<Paths, Routes, RouterRoutes>>, schemaRoute: SchemaRouterRoutes) => class HealthyRouter extends Router  {
     
-    private schemaRoute: SchemaRouterRoutes<T> | undefined = undefined;
 
-    constructor(definedRoutes: Routes<T>, schemaRoute: SchemaRouterRoutes<T>) {
+    constructor(definedRoutes: Routes) {
         super(definedRoutes);
-        this.setSchemaRoute(schemaRoute);
     }
 
-    private setSchemaRoute(schemaRoute: SchemaRouterRoutes<T>) {
-        this.schemaRoute = schemaRoute;
-    }
-
-    public transformRoutes(definedRoutes: Routes<T>) {
-        const routes = super.transformRoutes(definedRoutes);
+    public static transformRoutes(definedRoutes: Routes) {
+        const routes = Router.transformRoutes(definedRoutes);
         const transformedRoutes = this.parseRouterRoutes(routes);
         return transformedRoutes;
     }
 
-    private parseRouterRoutes(routes: Partial<RouterRoutes<T>>) {
-        const routesRouter = this.schemaRoute?.parse(routes);
-        if(!nonNullish(routesRouter)) {
-            throw new Error('Set all paths in routes!');
+    public static parseRouterRoutes(routes: RouterRoutes) {
+        const routesRouter = schemaRoute.parse(routes);
+        if(nonNullish(routesRouter)) {
+            return routesRouter;
         }
-        return routesRouter;
+        throw new Error('Set all paths in routes!');
     }
 
 }

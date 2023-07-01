@@ -1,3 +1,4 @@
-import { MethodContainer } from "./methodContainer";
+import { SchemaMethodContainer } from "./methodContainer";
+import z, {EnumLike, ZodNativeEnum} from 'zod';
 
-export type Route<T extends string> = [T ,MethodContainer[]];
+export const GetSchemaRoute = <T extends EnumLike>(schema: ZodNativeEnum<T>) => z.tuple([schema, z.array(SchemaMethodContainer)]);

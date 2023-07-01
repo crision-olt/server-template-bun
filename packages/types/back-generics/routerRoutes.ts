@@ -1,5 +1,4 @@
-import { RouterMethodContainer } from "./routerMethodContainer"
+import { SchemaRouterMethodContainer } from "./routerMethodContainer"
+import z, { EnumLike, ZodNativeEnum } from 'zod';
 
-export type RouterRoutes<T extends string> = {
-    [key in T]: RouterMethodContainer
-}
+export const GetSchemaRouterRoutes = <T extends EnumLike>(schema: ZodNativeEnum<T>) => z.record(schema, z.array(SchemaRouterMethodContainer));

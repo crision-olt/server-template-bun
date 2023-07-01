@@ -1,4 +1,6 @@
-import { HandlerRoute } from "./handlerRoute";
-import { Method } from "./method";
+import { SchemaHandlerRoute } from "./handlerRoute";
+import { SchemaMethod } from "./method";
+import { z } from 'zod';
 
-export type MethodContainer = [Method, HandlerRoute];
+export const SchemaMethodContainer = z.tuple([SchemaMethod, SchemaHandlerRoute]);
+export type MethodContainer = z.infer<typeof SchemaMethodContainer>;

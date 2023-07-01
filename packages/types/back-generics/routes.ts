@@ -1,3 +1,4 @@
-import { Route } from "./route";
+import { GetSchemaRoute } from "./route";
+import z, { EnumLike, ZodNativeEnum } from 'zod';
 
-export type Routes<T extends string> = Route<T>[];
+export const GetSchemaRoutes = <T extends EnumLike>(schema: ZodNativeEnum<T>) => z.array(GetSchemaRoute<T>(schema));
