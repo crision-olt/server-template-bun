@@ -1,38 +1,38 @@
-import { Routes } from 'types/back-generics/routes';
-import { RouterRoutes } from 'types/back-generics/routerRoutes';
-import { RouterMethodContainer } from 'types/back-generics/routerMethodContainer';
-import { Route } from 'types/back-generics/route';
 import { MethodContainer } from 'types/back-generics/methodContainer';
 import { nonNullish } from 'utils/nonNullish';
 import { match } from 'path-to-regexp';
-import { Method } from 'types/back-generics/method';
+import { Method, SchemaMethod } from 'types/back-generics/method';
+import { SchemaParams } from 'types/back-generics/params';
+import { OptionalRecord } from 'types/optionalRecord';
+import { RouterMethodContainer } from 'types/back-generics/routerMethodContainer';
 
-export class Router<T extends string> { 
-    private routes: Readonly<RouterRoutes<T>> | Readonly<Partial<RouterRoutes<T>>> | undefined = undefined;
-    private definedRoutes: Routes<T> | undefined = undefined;
+export const GetRouter = <
+    Paths extends string, 
+    Routes extends Array<[Paths, MethodContainer[]]>, 
+    RouterRoutes extends OptionalRecord<Paths, RouterMethodContainer[]>
+    > () => class Router { 
+    public static routes: RouterRoutes| undefined = undefined;
+    public static definedRoutes: Routes | undefined = undefined;
 
-    constructor(definedRoutes: Routes<T>) {
-        this.setRoutes(definedRoutes);
-        this.setDefinedRoutes(definedRoutes);
+    constructor(definedRoutes: Routes) {
+        Router.setRoutes(definedRoutes);
+        Router.setDefinedRoutes(definedRoutes);
     }
 
-    public handleRequest(request: Request) {
-        const {routeRef, params} = this.getRefAndParamByURL(request);
-        const method = this.getMethod(request, routeRef);
-        return method(request, params);
+    public static showInfoRequest(request: Request) {
+        const url = new URL(request.url);
+        console.log(`${request.method}: ${url.pathname}`, );
     }
-
-    private setDefinedRoutes(definedRoutes: Routes<T>) {
-        this.definedRoutes = definedRoutes;
-    }
-
-    private getRefAndParamByURL(request: Request) {
-        let routeRef: T | undefined;
-        let params: object | undefined;
-        this.definedRoutes?.every(([route]) => {
-            const matcherUrl = match(route)(request.url);
+    
+    public static getRefAndParamByURL(request: Request) {
+        let routeRef: Paths | undefined;
+        let params: Record<string, never> | undefined;
+        const url = new URL(request.url);
+        Router.definedRoutes?.every(([route]) => {
+            const matcherUrl = match(route)(url.pathname);
             if(!matcherUrl) return true;
-            params = matcherUrl.params;
+            const paramsParsed = SchemaParams.parse(matcherUrl.params);
+            params = paramsParsed;
             routeRef = route;
             return false;
         });
@@ -43,64 +43,75 @@ export class Router<T extends string> {
 
         return {routeRef, params};
     }
-    private getMethod(request: Request, routeRef: T) {
-        if(!nonNullish(this.routes)) {
+
+    public handleRequest(request: Request) {
+        Router.showInfoRequest(request);
+        const {routeRef, params} = Router.getRefAndParamByURL(request);
+        const method = Router.getMethod(request, routeRef);
+        return method(request, params);
+    }
+
+    public static setDefinedRoutes(definedRoutes: Routes) {
+        Router.definedRoutes = definedRoutes;
+    }
+
+    
+    public static getMethod(request: Request, routeRef: Paths) {
+        if(!nonNullish(Router.routes)) {
             throw new Error('Fatal error: Routes not defined');
         }
 
-        const methods = this.routes[routeRef];
+        const methods = Router.routes[routeRef];
 
         if(!nonNullish(methods)) {
             throw new Error(`Fatal error: Route reference: "${routeRef}" not found`);
         }
 
         const {method} = request;
-        const methodAction = methods[method as Method];
+        const methodParsed = SchemaMethod.parse(method);
+        if(!nonNullish(methodParsed)) {
+            throw new Error(`Router method "${methodParsed}" is not valid`);
+        }
+        const methodAction = Router.getMethodFromContainer(methods, methodParsed);
         if(!nonNullish(methodAction)) {
-            throw new Error(`This method "${method}" not found in this url "${request.url}"`);
+            throw new Error(`Router method "${method}" not found in Router url "${request.url}"`);
         }
 
         return methodAction;
 
     }
 
-    private setRoutes(definedRoutes: Routes<T>) {
-        const transformedRoutes = this.transformRoutes(definedRoutes);
-        this.routes = Object.freeze(transformedRoutes);
+    public static setRoutes(definedRoutes: Routes) {
+        const transformedRoutes = Router.transformRoutes(definedRoutes);
+        Router.routes = Object.freeze(transformedRoutes);
     }
 
-    public transformRoutes(definedRoutes: Routes<T>) {
-        const routes: Partial<RouterRoutes<T>> = {};
-        definedRoutes.forEach(this.getRouterRoutes(routes));
+    public static transformRoutes(definedRoutes: Routes) {
+        const routes: RouterRoutes = Router.getRouterRoutes(definedRoutes)
         return routes;
     }
 
-    public getRoutes() {
-        return this.routes;
+    public static getRoutes() {
+        return Router.routes;
     }
 
-    private getRouterRoutes(routes: Partial<RouterRoutes<T>>) {
-        return ([route, controller]: Route<T>) => {
-            const controllers: RouterMethodContainer = {};
-
-            controller.forEach(this.getMethodContainer(controllers, route))
-
-            if(routes[route]) {
-                throw new Error(`Route ${route} already defined`);
-            }
-
-            routes[route] = controllers;
+    public static getRouterRoutes(routes: Routes) {
+        const routerRoutes: OptionalRecord<Paths, RouterMethodContainer[]> = {}
+        routes.forEach(([route, methodContainer]) => {
+            routerRoutes[route] = methodContainer;
         }
+        );
+        return routerRoutes as RouterRoutes;
+
     }
 
-    private getMethodContainer(controllers: RouterMethodContainer, route: string) {
-        return ([method, action]:MethodContainer) => {
-            if(controllers[method]) {
-                throw new Error(`Method ${method} already defined in route ${route}`);
-            }
-
-            controllers[method] = action;
+    public static getMethodFromContainer(controllers: RouterRoutes[Paths], method: Method) {
+        const methodContainer = controllers?.find(([methodController]) => methodController === method);
+        if(!nonNullish(methodContainer)) {
+            throw new Error(`Method ${method} already defined`);
         }
+        return methodContainer[1];
+        
     }
 
 }
