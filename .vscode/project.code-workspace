@@ -1,0 +1,38 @@
+{
+    "folders": [
+      {
+        "name": "ROOT",
+        "path": "../"
+      },
+      {
+        "name": "user-backend",
+        "path": "../apps/user-backend"
+      },
+      {
+        "name": "endpoints",
+        "path": "../packages/endpoints",
+      },
+      {
+        "name": "router",
+        "path": "../packages/router",
+      },
+      {
+        "name": "types",
+        "path": "../packages/types",
+      },
+      {
+        "name": "ui",
+        "path": "../packages/ui",
+      },
+      {
+        "name": "utils",
+        "path": "../packages/utils",
+      },
+    ],
+    "settings": {
+      "files.exclude": {
+        "node_modules/": true,
+      },
+      "jest.disabledWorkspaceFolders": ["ROOT", "packages/app1"]
+    }
+  }

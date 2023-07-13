@@ -1,54 +1,39 @@
-import { GetSchemaRoutes } from 'types/back-generics/routes';
-import { SchemaPath, Paths } from '../enums/paths';
-import { z } from 'zod';
+import { Paths } from '../enums/paths';
+import type { User } from 'types/models/User';
+const user: User = {
+    id: '1',
+    name: 'Bun',
+    email: 'crision.olt@gmail.com',
+    password: '123456',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    role: 'super-admin',
+    permissions: [
+        'user:read',
+        'user:write',
+        'user:delete',
+        'user:edit',
+    ],
+    blocked:false,
+} 
 
-export const SchemaRoutes = GetSchemaRoutes(SchemaPath);
-export type Routes = z.infer<typeof SchemaRoutes>;
-
-export const routes = SchemaRoutes.parse([
-    [
-        Paths.FAVICON,
-        [
-            [
-                'GET',
-                () => {
-                    //return favicon
-                    return new Response(`Bun!`);
-                }
-            ],
-        ]
-    ],
-    [
-        Paths.ROOT,
-        [
-            [
-                'GET',
-                () => {
-                    return new Response(`Bun!`);
-                }
-            ],
-        ]
-    ],
-    [
-        Paths.USER, 
-        [
-            [
-                'GET', 
-                () => {
-                    return new Response(`Bun!`);
-                }
-            ],
-        ]
-    ],
-    [
-        Paths.USER_ID, 
-        [
-            [
-                'GET', 
-                () => {
-                    return new Response(`Bun!`);
-                }
-            ],
-        ]
-    ],
-])
+export const routes = 
+{
+    [Paths.FAVICON]: {
+        GET: () => {
+            //return favicon
+            return new Response(`Bun!`);
+        },
+    },
+    [Paths.ROOT]: {
+        GET: () => {
+            return new Response(`Bun!`);
+        },
+    },
+    [Paths.USER]: {
+        GET: () => {
+            return new Response(JSON.stringify([user]));
+        },
+    },
+}
+       
