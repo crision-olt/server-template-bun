@@ -1,0 +1,7 @@
+{
+  "include": ["tailwind.config.js"],
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "strict": true
+  }
+}

@@ -14,7 +14,7 @@
       "noEmit": true,
     },
     "include": [
-      "**/*.ts",
+      "**/*.ts", "**/**/tailwind.config.js", "tailwind.config.js"
     ]
   }
   

@@ -1,5 +1,6 @@
 import { Paths } from '../enums/paths';
 import type { User } from 'types/models/User';
+
 const user: User = {
     id: '1',
     name: 'Bun',
@@ -15,8 +16,7 @@ const user: User = {
         'user:edit',
     ],
     blocked:false,
-} 
-
+}
 export const routes = 
 {
     [Paths.FAVICON]: {

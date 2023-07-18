@@ -4,25 +4,27 @@ module.exports = {
     "eslint:recommended",
     "plugin:typescript-sort-keys/recommended",
     "turbo", 
-    "prettier"
+    "prettier",
   ],
   plugins: [
     "@typescript-eslint",
     "simple-import-sort",
     "typescript-sort-keys",
     "unused-imports",
+    "@tanstack/query",
   ],
   overrides: [
     {
       extends: [
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@tanstack/eslint-plugin-query/recommended",
       ],
       files: ["**/*.{ts,tsx}"],
       rules: {
         "@typescript-eslint/await-thenable": "warn",
         "@typescript-eslint/no-floating-promises": "warn",
-        "@typescript-eslint/no-misused-promises": "warn",
+        "@typescript-eslint/no-misused-promises": "off",
       },
     },
   ],
@@ -57,14 +59,14 @@ module.exports = {
     "no-var": "error",
     "prefer-const": "error",
     "keyword-spacing": "error",
-    "array-bracket-newline": ["error", {"multiline": true}],
+    "array-bracket-newline": ["error", { "multiline": true }],
     "array-bracket-spacing": ["error", "never"],
     "array-element-newline": ["error", "consistent"],
     "arrow-parens": ["error", "always"],
     "arrow-spacing": 2,
     "block-spacing": 2,
     "comma-dangle": ["error", "always-multiline"],
-    "object-curly-newline": ["error", {"multiline": true}],
+    "object-curly-newline": ["error", { "multiline": true }],
     "object-curly-spacing": ["error", "always"],
     "space-before-blocks": ["error", "always"],
     "@typescript-eslint/array-type": "error",
@@ -83,11 +85,10 @@ module.exports = {
     "@typescript-eslint/prefer-nullish-coalescing": "error",
     "@typescript-eslint/prefer-optional-chain": "error",
     "@typescript-eslint/prefer-string-starts-ends-with": "error",
-    "object-shorthand": ["error", "always"]
+    "object-shorthand": ["error", "always"],
+    "@next/next/no-img-element": "off",
+    "@tanstack/query/exhaustive-deps": "error",
+    "@tanstack/query/prefer-query-object-syntax": "error",
   },
-  parserOptions: {
-    babelOptions: {
-      presets: [require.resolve("next/babel")],
-    },
-  },
+  parserOptions: { babelOptions: { presets: [require.resolve("next/babel")] } },
 };

@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "dependencies": {
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "eslint": "^8.44.0",
     "eslint-config-next": "^13.4.9",
@@ -12,16 +15,13 @@
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-simple-import-sort": "^10.0.0",
-    "eslint-plugin-unused-imports": "^3.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "devDependencies": {
+    "eslint-plugin-unused-imports": "^3.0.0",
     "@babel/core": "^7.22.9",
     "@babel/preset-env": "^7.22.9",
+    "@tanstack/eslint-plugin-query": "^4.29.9",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint-plugin-typescript-sort-keys": "^2.3.0",
-    "next": "^13.4.9"
+    "next": "^13.4.9",
+    "tsconfig": "workspace:*"
   }
 }

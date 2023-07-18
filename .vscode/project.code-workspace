@@ -9,6 +9,10 @@
         "path": "../apps/user-backend"
       },
       {
+        "name": "user-frontend",
+        "path": "../apps/user-frontend"
+      },
+      {
         "name": "endpoints",
         "path": "../packages/endpoints",
       },
@@ -27,6 +31,18 @@
       {
         "name": "utils",
         "path": "../packages/utils",
+      },
+      {
+        "name": "eslint",
+        "path": "../packages/eslint-config-custom",
+      },
+      {
+        "name": "tsconfig",
+        "path": "../packages/tsconfig",
+      },
+      {
+        "name": "tailwindcss",
+        "path": "../packages/tailwind-config",
       },
     ],
     "settings": {

@@ -12,7 +12,8 @@
     "eslint-config-custom": "workspace:*",
     "router": "workspace:*",
     "tsconfig": "workspace:*",
-    "types": "workspace:*"
+    "types": "workspace:*",
+    "utils": "workspace:*"
   },
   "peerDependencies": {
     "typescript": "^5.1.6"
